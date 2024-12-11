@@ -1,5 +1,4 @@
-/* Container principal */
-.container-log {
+.main {
     height: 100vh;
     width: 100%;
     display: flex;
@@ -9,8 +8,7 @@
     background: linear-gradient(135deg, #e4f7fa, #ffffff);
 }
 
-/* Container de login */
-.login-container {
+.body {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -24,23 +22,15 @@
     transition: transform 0.3s ease;
 }
 
-/* Efeito de hover no container de login */
-.login-container:hover {
-    transform: scale(1.02);
-}
-
-/* Formulário */
-.login-container section {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    padding: 15px;
+.body form {
+    align-items: center;
 }
 
 /* Inputs do formulário */
-.login-container section input {
+.body form input {
     width: 100%;
     height: 50px;
+    align-items: center;
     margin-bottom: 15px;
     padding: 15px;
     font-size: 16px;
@@ -50,13 +40,54 @@
 }
 
 /* Efeito de foco nos inputs */
-.login-container section input:focus {
-    border: 2px solid #353535;
+.body form input:focus {
+    border: 2px solid #6c87cb;
     outline: none;
 }
 
+/* Contêiner da entrada */
+.file-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilizando o botão */
+.custom-file-upload {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #28a745; /* Verde do botão */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+/* Botão ao passar o mouse */
+.custom-file-upload:hover {
+    background-color: #218838; /* Verde mais escuro */
+}
+
+/* Ocultando o input original */
+#file-upload {
+    display: none;
+}
+
+/* Container com espaçamento e borda */
+.file-input-container {
+    margin-top: 10px;
+    border: 1px dashed #ccc;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
 /* Botão de login */
-.login-container section button {
+.body button {
     width: 100%;
     height: 50px;
     background-color: #383737;
@@ -71,20 +102,20 @@
 }
 
 /* Hover no botão */
-.login-container section button:hover {
+.body button:hover {
     background-color: #424141;
 }
 
 /* Links para navegação */
 .container-button {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-evenly;
     align-items: center;
     margin-top: 15px;
 }
 
 /* Links estilizados */
-.login-container section a {
+.body a {
     color: #e0e0e1;
     text-decoration: none;
     font-weight: bold;
@@ -93,27 +124,7 @@
 }
 
 /* Hover nos links */
-.login-container section a:hover {
+.body a:hover {
     color: #fff;
 }
 
-/* Responsividade */
-@media (max-width: 480px) {
-    .login-container {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .login-container section input {
-        font-size: 14px;
-        padding: 12px;
-    }
-
-    .login-container section button {
-        font-size: 16px;
-    }
-
-    .login-container section a {
-        font-size: 12px;
-    }
-}

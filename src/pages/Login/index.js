@@ -1,66 +1,70 @@
+import "./style.css";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
-// import api from '../../services/api';
-import "./styles.css";
+import api from '../../services/api';
+import { Link, useNavigate } from "react-router-dom";
 
 export function Login() {
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
-  /* 
-  const dados = {login, senha};
-    const history = useHistory();
+    const navigate = useNavigate();
 
     async function handleLogin(e) {
         e.preventDefault();
 
-        try {
-            const response = await api.post('usuario/autenticar', dados);
-            
-            localStorage.setItem('userId', response.data.id);
-            localStorage.setItem('userName', response.data.nome);
-            localStorage.setItem('userLogin', login);
-            localStorage.setItem('userEmail', response.data.email);
-            localStorage.setItem('userData', response.data.data_nascimento);
+        if (!email || !password) {
+            alert('Por favor, preencha todos os campos.');
+            return;
+        }
 
-            history.push('/perfil');
+        try {
+            const response = await api.post('/users/signin', { email, password })
+                .then(() => {
+                    localStorage.setItem('user', JSON.stringify({
+                        id: response.data.id,
+                        name: response.data.nome,
+                        email: email
+                    }));
+                    navigate('/home');
+                }).catch((e) => {
+                    alert("E-mail ou senha incorreto", e);
+                });
+
         } catch (error) {
             alert('Erro no login, tente novamente.');
         }
-    }
-  */
+    };
 
-  return (
-    <div className="container-log">
-      <div className="login-container">
-        <section className="formulario">
-          <form /*onSubmit={handleLogin}*/>
+    return (
+        <div className="container-log">
             <h1>Faça seu login</h1>
-            <input
-              type="email"
-              placeholder="E-mail"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              placeholder="Senha"
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
-          </form>
-          <div className="container-button">
-            <button
-              className="button" type="submit"
-              onClick={() => alert("email: " + email + " Senha: " + senha)}
-            >
-              Entrar
-            </button>
-            <Link to="/cadastrar">Cadastrar</Link>
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+            <div className="login-container">
+                <section className="formulario">
+                    <form onSubmit={handleLogin}>
+                        <input
+                            type="email"
+                            placeholder="E-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                        <input
+                            type="password"
+                            placeholder="Senha"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                        <button className="button" type="submit">
+                            Entrar
+                        </button>
+                    </form>
+                    <div className="container-button">
+                        <Link to="/register">Registrar-se</Link>
+                        <Link to="/home">Home</Link>
+                    </div>
+                </section>
+            </div>
+        </div>
+    );
 }
