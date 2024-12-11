@@ -18,7 +18,7 @@ export function Register() {
     };
 
     return (
-        <div className="main" >
+        <div className="register-main" >
             <h1>Registre-se</h1>
             <section className="body">
                 <form onSubmit={handleRegister}>
