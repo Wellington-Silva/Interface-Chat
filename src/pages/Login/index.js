@@ -22,7 +22,7 @@ export function Login() {
 
             localStorage.setItem('user', JSON.stringify({
                 id: response.data.id,
-                name: response.data.nome,
+                name: response.data.name,
                 email: email,
                 picture: response.data.picture,
                 token: response.data.token

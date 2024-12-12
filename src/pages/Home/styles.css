@@ -188,3 +188,41 @@ body {
     color: gray;
     font-style: italic;
 }
+
+.message-input {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #ddd; /* Linha separando o campo de entrada */
+    background-color: #f9f9f9; /* Fundo mais claro */
+}
+
+.input-message {
+    flex: 1; /* Ocupar todo o espaço disponível */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    outline: none; /* Remove a borda azul ao focar */
+    transition: border 0.2s ease;
+}
+
+.input-message:focus {
+    border-color: #007bff; /* Cor de destaque ao focar */
+}
+
+.send-button {
+    margin-left: 10px;
+    padding: 10px 20px;
+    background-color: #007bff; /* Azul */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.send-button:hover {
+    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+}

@@ -1,3 +1,9 @@
+# Telas
+- Login
+- Cadastro de usuário
+- Home (Exibir grupos, conversas, membros)
+- Novo grupo
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

@@ -1,67 +1,79 @@
-import { useState } from "react";
+import "./styles.css";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import api from "../../services/api";
 import IMessage from "../../components/i-message";
 import UserMessage from "../../components/user-message";
 
-// import api from '../../services/api';
-import "./styles.css";
 
 export function Home() {
-    const [messages, setMessages] = useState([
-        {
-            id: "01057a91-48a2-46b0-a1c4-50cc04bc3ed1",
-            name: "Sala 3",
-            members: [
-                {
-                    id: 10,
-                    name: "Wellington Carvalho",
-                    picture: "https://img.myloview.com.br/posters/user-icon-vector-people-icon-profile-vector-icon-person-illustration-business-user-icon-users-group-symbol-male-user-symbol-700-223068865.jpg",
-                    isOnline: false,
-                },
-                {
-                    id: 11,
-                    name: "Gleice Ellen",
-                    picture: "https://img.myloview.com.br/posters/user-icon-vector-people-icon-profile-vector-icon-person-illustration-business-user-icon-users-group-symbol-male-user-symbol-700-223068865.jpg",
-                    isOnline: false,
-                },
-                {
-                    id: 12,
-                    name: "Tiago Vinicius Manoel Mendes",
-                    picture: "https://img.myloview.com.br/posters/user-icon-vector-people-icon-profile-vector-icon-person-illustration-business-user-icon-users-group-symbol-male-user-symbol-700-223068865.jpg",
-                    isOnline: true,
-                },
-            ],
-        },
-        {
-            id: "75c566f0-494a-4241-b636-995354a44635",
-            name: "Sala 1",
-            members: [],
-        },
-        {
-            id: "fc0fbce0-3521-4116-b40a-aeaefd789f68",
-            name: "Sala 2",
-            members: [],
-        },
-    ]);
-
-    const [selectedRoom, setSelectedRoom] = useState(messages[0]);
+    const [conversations, setConversations] = useState([]);
+    const [selectedRoom, setSelectedRoom] = useState(conversations[0] || null);
     const [showMembers, setShowMembers] = useState(false); // Controla a exibição
+    const [sendMessage, setSendMessage] = useState("");
+
+    async function handleSendMessage() {
+        if (!sendMessage.trim()) {
+            alert("Digite uma mensagem antes de enviar.");
+            return;
+        }
+        console.log("Mensagem enviada:", sendMessage);
+        try {
+            const response = await api.post("/chat/send", { senderId: 1, recipientId: 2, content: sendMessage });
+            if (!response || response.data.error === true) return alert("Mensagem não enviada");
+            setSendMessage("");
+        } catch (e) {
+            alert(e)
+        }
+    };
+
+    async function handleConversations() {
+        try {
+            const response = await api.get("/room");
+
+            if (!response || response.data.error) return alert("Erro ao buscar conversas");
+
+            const conversationsData = response.data.map(room => ({
+                id: room.id,
+                name: room.name || "Sala sem nome",
+                members: room.members || []
+            }));
+
+            setConversations(conversationsData);
+            setSelectedRoom(conversationsData[0] || null);
+            localStorage.setItem('conversations', JSON.stringify(conversationsData));
+        } catch (error) {
+            alert("Erro ao conectar com o servidor");
+            setConversations([]); // Garante que o estado seja resetado em caso de erro
+        }
+    }
+
+    useEffect(() => {
+        const storedConversations = localStorage.getItem('conversations');
+        if (storedConversations) {
+            const parsedConversations = JSON.parse(storedConversations);
+            setConversations(parsedConversations);
+            setSelectedRoom(parsedConversations[0] || null);
+        } else {
+            handleConversations(); // Carrega do backend se não houver localStorage
+        }
+    }, []);
 
     return (
         <div className="main">
             <div className="groups">
                 <input placeholder="Pesquisar" type="text" />
-                {messages.map((message) => (
+                {conversations.map((conversation) => (
                     <button
-                        key={message.id}
-                        className={`message ${selectedRoom.id === message.id ? "active" : ""}`}
+                        key={conversation.id}
+                        className={`message ${selectedRoom.id === conversation.id ? "active" : ""}`}
                         onClick={() => {
-                            setSelectedRoom(message);
+                            setSelectedRoom(conversation);
                             setShowMembers(false); // Redefine para conversa ao mudar de sala
                         }}
                     >
                         <div className="icon-conversation"></div>
-                        {message.name}
+                        {conversation.name}
                     </button>
                 ))}
                 <Link to="/">Sair</Link>
@@ -75,14 +87,14 @@ export function Home() {
                         src="https://cdn-icons-png.flaticon.com/512/615/615075.png"
                         alt="group"
                     />
-                    <h2>{selectedRoom.name}</h2>
+                    {selectedRoom && <h2>{selectedRoom.name}</h2>}
                 </header>
                 <div className="chat-area">
                     {showMembers ? (
                         // Exibe os membros da sala
                         <div className="members">
                             <h3>Membros</h3>
-                            {selectedRoom.members.length > 0 ? (
+                            {selectedRoom?.members?.length > 0 ? (
                                 selectedRoom.members.map((member) => (
                                     <div key={member.id} className="member">
                                         <img src={member.picture} alt={member.name} />
@@ -103,10 +115,42 @@ export function Home() {
                     ) : (
                         // Exibe a conversa
                         <div className="chat">
-                            <UserMessage members={messages[0].members} picture={messages[0].members[0].picture}/>
-                            <IMessage members={messages[0].members} picture={messages[0].members[0].picture}/>
-                            <UserMessage members={messages[0].members} picture={messages[0].members[0].picture}/>
+                            {conversations[0]?.members?.length > 0 ? (
+                                <>
+                                    <UserMessage
+                                        members={conversations[0].members}
+                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
+                                    />
+                                    <IMessage
+                                        members={conversations[0].members}
+                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
+                                    />
+                                    <UserMessage
+                                        members={conversations[0].members}
+                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
+                                    />
+                                </>
+                            ) : (
+                                <p className="no-conversation">Nenhuma conversa disponível</p>
+                            )}
+                            <div className="message-input">
+                                <input
+                                    type="text"
+                                    placeholder="Digite sua mensagem..."
+                                    className="input-message"
+                                    value={sendMessage}
+                                    onChange={(e) => setSendMessage(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSendMessage()} // Envia ao pressionar Enter
+                                />
+                                <button
+                                    className="send-button"
+                                    onClick={handleSendMessage}
+                                >
+                                    Enviar
+                                </button>
+                            </div>
                         </div>
+
                     )}
                 </div>
             </div>
