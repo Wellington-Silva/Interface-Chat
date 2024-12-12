@@ -18,18 +18,19 @@ export function Login() {
         }
 
         try {
-            const response = await api.post('/users/signin', { email, password })
-                .then(() => {
-                    localStorage.setItem('user', JSON.stringify({
-                        id: response.data.id,
-                        name: response.data.nome,
-                        email: email
-                    }));
-                    navigate('/home');
-                }).catch((e) => {
-                    alert("E-mail ou senha incorreto", e);
-                });
+            const response = await api.post('/users/signin', { email, password });
 
+            localStorage.setItem('user', JSON.stringify({
+                id: response.data.id,
+                name: response.data.nome,
+                email: email,
+                picture: response.data.picture,
+                token: response.data.token
+            }));
+
+            if (!response || response.data.error === true) return alert("Erro ao realizar login");
+
+            navigate('/home');
         } catch (error) {
             alert('Erro no login, tente novamente.');
         }
