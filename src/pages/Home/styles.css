@@ -19,6 +19,7 @@ body {
 }
 
 .groups {
+    position: relative;
     background-color: #474747;
     padding: 2%;
     width: 50vh;
@@ -56,10 +57,14 @@ body {
 }
 
 .groups a {
+    position: absolute;
     font-family: Arial, Helvetica, sans-serif;
-    color: #de0505;
+    color: #ef1a1a;
+    left: 50%;
+    bottom: 20px; /*Distância do rodapé da área de grupos*/
     margin-top: 20px;
     font-size: 12pt;
+    transform: translateX(-50%); /*Centraliza horizontalmente*/
     font-weight: normal;
     text-align: center;
     cursor: pointer;
@@ -91,8 +96,21 @@ body {
     border-radius: 50%;
 }
 
+.content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    height: 100%; /* Garante que ocupe a altura total */
+    overflow: hidden; /* Evita estouros de conteúdo */
+}
+
 .chat-area {
+    flex: 1;
+    overflow-y: auto; /* Permite rolagem vertical quando necessário */
     padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chat-area h3 {
@@ -193,8 +211,10 @@ body {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-top: 1px solid #ddd; /* Linha separando o campo de entrada */
-    background-color: #f9f9f9; /* Fundo mais claro */
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+    position: relative; /* Para evitar sobreposição */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .input-message {
@@ -208,13 +228,13 @@ body {
 }
 
 .input-message:focus {
-    border-color: #007bff; /* Cor de destaque ao focar */
+    border-color: #474747;
 }
 
 .send-button {
     margin-left: 10px;
     padding: 10px 20px;
-    background-color: #007bff; /* Azul */
+    background-color: #474747;
     color: white;
     border: none;
     border-radius: 4px;
@@ -224,5 +244,5 @@ body {
 }
 
 .send-button:hover {
-    background-color: #0056b3; /* Azul mais escuro ao passar o mouse */
+    background-color: #636262;
 }
