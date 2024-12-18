@@ -1,0 +1,119 @@
+/* Container principal */
+.container-log {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e4f7fa, #ffffff);
+}
+
+/* Container de login */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 12px;
+    background: #474747;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+}
+
+/* Efeito de hover no container de login */
+.login-container:hover {
+    transform: scale(1.02);
+}
+
+/* Formulário */
+.login-container section {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 15px;
+}
+
+/* Inputs do formulário */
+.login-container section input {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 15px;
+    padding: 15px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border 0.3s ease;
+}
+
+/* Efeito de foco nos inputs */
+.login-container section input:focus {
+    border: 2px solid #353535;
+    outline: none;
+}
+
+/* Botão de login */
+.login-container section button {
+    width: 100%;
+    height: 50px;
+    background-color: #383737;
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+/* Hover no botão */
+.login-container section button:hover {
+    background-color: #424141;
+}
+
+/* Links para navegação */
+.container-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+/* Links estilizados */
+.login-container section a {
+    color: #e0e0e1;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 14px;
+    transition: color 0.3s ease;
+}
+
+/* Hover nos links */
+.login-container section a:hover {
+    color: #fff;
+}
+
+/* Responsividade */
+@media (max-width: 480px) {
+    .login-container {
+        width: 100%;
+        padding: 20px;
+    }
+
+    .login-container section input {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .login-container section button {
+        font-size: 16px;
+    }
+
+    .login-container section a {
+        font-size: 12px;
+    }
+}
