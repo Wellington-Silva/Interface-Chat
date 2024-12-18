@@ -6,33 +6,47 @@ import { Link, useNavigate } from "react-router-dom";
 export function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
     async function handleLogin(e) {
         e.preventDefault();
 
+        // Reseta estado de erro
+        setError("");
+
         if (!email || !password) {
-            alert('Por favor, preencha todos os campos.');
+            setError("Por favor, preencha todos os campos.");
             return;
         }
 
+        setLoading(true);
         try {
-            const response = await api.post('/users/signin', { email, password });
+            const { data } = await api.post('/users/signin', { email, password });
 
-            localStorage.setItem('user', JSON.stringify({
-                id: response.data.id,
-                name: response.data.name,
-                email: email,
-                picture: response.data.picture,
-                token: response.data.token
-            }));
+            if (!data || data.error) {
+                setError("Credenciais inválidas ou erro no servidor.");
+                return;
+            }
 
-            if (!response || response.data.error === true) return alert("Erro ao realizar login");
+            const { userToken } = data;
+            const token = userToken.token;
+            const user = userToken.user;
+
+            if (!token) {
+                setError("Token de autenticação ausente. Tente novamente.");
+                return;
+            }
+
+            localStorage.setItem('user', JSON.stringify({ user, token }));
 
             navigate('/home');
-        } catch (error) {
-            alert('Erro no login, tente novamente.');
+        } catch (err) {
+            setError("Erro ao realizar login. Verifique sua conexão ou tente novamente.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -42,6 +56,7 @@ export function Login() {
             <div className="login-container">
                 <section className="formulario">
                     <form onSubmit={handleLogin}>
+                        {error && <p className="error-message">{error}</p>}
                         <input
                             type="email"
                             placeholder="E-mail"
@@ -56,8 +71,12 @@ export function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <button className="button" type="submit">
-                            Entrar
+                        <button
+                            className="button"
+                            type="submit"
+                            disabled={loading}
+                        >
+                            {loading ? "Carregando..." : "Entrar"}
                         </button>
                     </form>
                     <div className="container-button">

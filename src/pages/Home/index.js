@@ -2,14 +2,15 @@ import "./styles.css";
 import { Link } from "react-router";
 import api from "../../services/api";
 import { useEffect, useState } from "react";
-import IMessage from "../../components/i-message";
-import UserMessage from "../../components/user-message";
 
 export function Home() {
     const [conversations, setConversations] = useState([]);
-    const [selectedRoom, setSelectedRoom] = useState(conversations[0] || null);
-    const [showMembers, setShowMembers] = useState(false); // Controla a exibição
+    const [selectedRoom, setSelectedRoom] = useState(null);
+    const [messages, setMessages] = useState([]);
+    const [loadingMessages, setLoadingMessages] = useState(true);
+    const [showMembers, setShowMembers] = useState(false);
     const [sendMessage, setSendMessage] = useState("");
+    const [currentUser, setCurrentUser] = useState(null);
 
     // async function handleHistoryPrivateMessages() {
     //     try {
@@ -22,36 +23,38 @@ export function Home() {
     //     }
     // };
 
-    async function handleSendMessage() {
-        if (!sendMessage.trim()) {
-            alert("Digite uma mensagem antes de enviar.");
-            return;
-        }
+    // async function handleSendMessage() {
+    //     if (!sendMessage.trim()) {
+    //         alert("Digite uma mensagem antes de enviar.");
+    //         return;
+    //     }
 
-        // pegar IDs do jwt e destinatário e não estático
-        const senderId = 1;
-        const recipientId = 2
+    //     // pegar IDs do jwt e destinatário e não estático
+    //     const senderId = 1;
+    //     const recipientId = 2
 
-        try {
-            const { data } = await api.post("/chat/send", { senderId: senderId, recipientId: recipientId, content: sendMessage });
-            if (!data || data.error === true) return alert("Mensagem não enviada");
-            setSendMessage("");
-        } catch (e) {
-            alert(e);
-        }
-    };
+    //     try {
+    //         const { data } = await api.post("/chat/send", { senderId: senderId, recipientId: recipientId, content: sendMessage });
+    //         if (!data || data.error === true) return alert("Mensagem não enviada");
+    //         setSendMessage("");
+    //     } catch (e) {
+    //         alert(e);
+    //     }
+    // };
 
     async function handleSendMessageGroup() {
         if (!sendMessage.trim()) {
             alert("Digite uma mensagem antes de enviar");
             return;
         };
-    
+
         try {
+            // const { user } = JSON.parse(localStorage.getItem("user"));
+            console.log("ID: ", currentUser.id);
             const { data } = await api.post(`/room/sendMessage?roomId=${selectedRoom?.id}`,
-                { 
-                    content: sendMessage, 
-                    senderId: 4
+                {
+                    content: sendMessage,
+                    senderId: currentUser.id
                 }
             );
             console.log("Mensagem enviada: ", data);
@@ -62,13 +65,29 @@ export function Home() {
         }
     };
 
-    async function handleConversations() {
+    // Função para buscar histórico de mensagens
+    const fetchRoomMessages = async (roomId) => {
+        if (!roomId) return;
+
+        setLoadingMessages(true);
+        try {
+            const { data } = await api.get(`/room/historyMembers?roomId=${roomId}`);
+            setMessages(data);
+        } catch (error) {
+            alert("Erro ao carregar mensagens.");
+        } finally {
+            setLoadingMessages(false);
+        }
+    };
+
+    // Função para buscar conversas disponíveis
+    const handleConversations = async () => {
         try {
             const { data } = await api.get("/room");
 
             if (!data || data.error) return alert("Erro ao buscar conversas");
 
-            const conversationsData = data.map(room => ({
+            const conversationsData = data.map((room) => ({
                 id: room.id,
                 name: room.name || "Sala sem nome",
                 members: room.members || []
@@ -76,7 +95,7 @@ export function Home() {
 
             setConversations(conversationsData);
             setSelectedRoom(conversationsData[0] || null);
-            localStorage.setItem('conversations', JSON.stringify(conversationsData));
+            localStorage.setItem("conversations", JSON.stringify(conversationsData));
         } catch (error) {
             alert("Erro ao conectar com o servidor");
             setConversations([]); // Garante que o estado seja resetado em caso de erro
@@ -84,13 +103,27 @@ export function Home() {
     };
 
     useEffect(() => {
-        const storedConversations = localStorage.getItem('conversations');
+        const storedConversations = localStorage.getItem("conversations");
         if (storedConversations) {
             const parsedConversations = JSON.parse(storedConversations);
             setConversations(parsedConversations);
             setSelectedRoom(parsedConversations[0] || null);
         } else {
             handleConversations(); // Carrega do backend se não houver localStorage
+        }
+    }, []);
+
+    useEffect(() => {
+        if (selectedRoom) {
+            fetchRoomMessages(selectedRoom.id);
+        }
+    }, [selectedRoom]);
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            const parsedUser = JSON.parse(storedUser);
+            setCurrentUser(parsedUser.user); // Define o estado com os dados do usuário
         }
     }, []);
 
@@ -101,7 +134,7 @@ export function Home() {
                 {conversations.map((conversation) => (
                     <button
                         key={conversation.id}
-                        className={`message ${selectedRoom.id === conversation.id ? "active" : ""}`}
+                        className={`message ${selectedRoom?.id === conversation.id ? "active" : ""}`}
                         onClick={() => {
                             setSelectedRoom(conversation);
                             setShowMembers(false); // Redefine para conversa ao mudar de sala
@@ -126,7 +159,7 @@ export function Home() {
                 </header>
                 <div className="chat-area">
                     {showMembers ? (
-                        <div className="members" /*Exibe os membros da sala*/> 
+                        <div className="members">
                             <h3>Membros</h3>
                             {selectedRoom?.members?.length > 0 ? (
                                 selectedRoom.members.map((member) => (
@@ -147,26 +180,32 @@ export function Home() {
                             )}
                         </div>
                     ) : (
-                        // Exibe a conversa
                         <div className="chat">
-                            {conversations[0]?.members?.length > 0 ? (
-                                <>
-                                    <UserMessage
-                                        selectedRoom={selectedRoom}
-                                        members={conversations[0].members}
-                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
-                                    />
-                                    <IMessage
-                                        selectedRoom={selectedRoom}
-                                        members={conversations[0].members}
-                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
-                                    />
-                                    <UserMessage
-                                        selectedRoom={selectedRoom}
-                                        members={conversations[0].members}
-                                        picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
-                                    />
-                                </>
+                            {loadingMessages ? (
+                                <p>Carregando mensagens...</p>
+                            ) : messages.length > 0 ? (
+                                messages.map((message) => {
+                                    const isLoggedUser = message.sender.id === currentUser.id;
+
+                                    return (
+                                        <div
+                                            key={message.id}
+                                            className={`user-message ${isLoggedUser ? "user-right" : "user-left"}`}
+                                        >
+                                            {!isLoggedUser && (
+                                                <img
+                                                    src={message.sender.picture}
+                                                    alt={message.sender.name}
+                                                    className="user-picture"
+                                                />
+                                            )}
+                                            <p>
+                                                <strong>{message.sender.name}:</strong> {message.content}
+                                            </p>
+                                            <small>{new Date(message.createdAt).toLocaleString()}</small>
+                                        </div>
+                                    );
+                                })
                             ) : (
                                 <p className="no-conversation">Nenhuma conversa disponível</p>
                             )}
@@ -180,7 +219,7 @@ export function Home() {
                         className="input-message"
                         value={sendMessage}
                         onChange={(e) => setSendMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleSendMessageGroup}
+                        onKeyDown={(e) => e.key === "Enter" && handleSendMessageGroup()}
                     />
                     <button
                         className="send-button"

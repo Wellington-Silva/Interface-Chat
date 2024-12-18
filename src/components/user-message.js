@@ -1,7 +1,7 @@
 import api from "../services/api";
 import React, { useState, useEffect } from "react";
 
-const UserMessage = ({ selectedRoom }) => {
+const UserMessage = ({ selectedRoom, loggedUserId }) => {
     const [messages, setMessages] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -11,7 +11,7 @@ const UserMessage = ({ selectedRoom }) => {
 
         try {
             const { data } = await api.get(`/room/historyMembers?roomId=${selectedRoom.id}`);
-            setMessages(data); // Atualiza o estado com as mensagens
+            setMessages(data);
         } catch (error) {
             alert("Erro ao buscar o histórico de mensagens.");
         } finally {
@@ -28,19 +28,28 @@ const UserMessage = ({ selectedRoom }) => {
             {loading ? (
                 <p>Carregando mensagens...</p>
             ) : messages.length > 0 ? (
-                messages.map((message) => (
-                    <div key={message.id} className="user-message">
-                        <img
-                            src={message.sender.picture}
-                            alt={message.sender.name}
-                            className="user-picture"
-                        />
-                        <p>
-                            <strong>{message.sender.name}:</strong> {message.content}
-                        </p>
-                        <small>{new Date(message.createdAt).toLocaleString()}</small>
-                    </div>
-                ))
+                messages.map((message) => {
+                    const isLoggedUser = message.sender.id === loggedUserId;
+
+                    return (
+                        <div
+                            key={message.id}
+                            className={`user-message ${isLoggedUser ? "user-right" : "user-left"}`}
+                        >
+                            {!isLoggedUser && (
+                                <img
+                                    src={message.sender.picture}
+                                    alt={message.sender.name}
+                                    className="user-picture"
+                                />
+                            )}
+                            <p>
+                                <strong>{message.sender.name}:</strong> {message.content}
+                            </p>
+                            <small>{new Date(message.createdAt).toLocaleString()}</small>
+                        </div>
+                    );
+                })
             ) : (
                 <p>Nenhuma mensagem encontrada.</p>
             )}

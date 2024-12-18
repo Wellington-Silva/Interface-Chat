@@ -9,6 +9,7 @@ export function Register() {
     const [base64Image, setBase64Image] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const navigate = useNavigate();
 
@@ -33,19 +34,18 @@ export function Register() {
         }
 
         try {
-            const response = await api.post("/users", { name, picture, email, password });
-        
-            localStorage.setItem("user", JSON.stringify({
-                id: response.data.id,
-                name: response.data.nome,
-                email: email,
-                picture: response.data.picture,
-                token: response.data.token,
-            }));
+            const { data } = await api.post("/users", { name, picture, email, password });
 
-            if (!response || response.data.error === true)
-                return alert("Erro ao realizar cadastro")
-        
+            const { user, userToken } = data.user;
+            const token = userToken.token;
+
+            if (!token) {
+                setError("Token de autenticação ausente. Tente novamente.");
+                return;
+            }
+
+            localStorage.setItem('user', JSON.stringify({ user, token }));
+
             navigate("/home");
         } catch (e) {
             alert(e.response?.data?.message || "Erro ao realizar cadastro");
