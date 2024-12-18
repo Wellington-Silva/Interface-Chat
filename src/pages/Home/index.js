@@ -11,56 +11,64 @@ export function Home() {
     const [showMembers, setShowMembers] = useState(false); // Controla a exibição
     const [sendMessage, setSendMessage] = useState("");
 
-    // async function handleHistoryMessagesPrivates() {
+    // async function handleHistoryPrivateMessages() {
     //     try {
     //         const user1Id=1;
     //         const user2Id=2;
-    //         const response = await api.get(`/chat/history?sender${user1Id}&recipient=${user2Id}`);
-    //         if (!response) alert("Serviço indisponível");
+    //         const { data } = await api.get(`/chat/history?sender${user1Id}&recipient=${user2Id}`);
+    //         if (!data || data.error === true) alert("Serviço indisponível");
     //     } catch (e) {
     //         alert("Erro ao obter mensagens");
     //     }
     // };
-
-    async function handleHistoryMessagesMembers() {
-        // pegar ID da sala
-        const roomId = "99ff6d8b-90a4-4532-9742-5060c3f0aa78";
-        try {
-            const { data } = await api.get(`/room/historyMembers?roomId=${roomId}`);
-            console.log("Response: ", data);
-            if (!data || data.error) alert("Serviço indisponível");
-        } catch (e) {
-            alert("Histórico não encontrado")
-        }
-    };
 
     async function handleSendMessage() {
         if (!sendMessage.trim()) {
             alert("Digite uma mensagem antes de enviar.");
             return;
         }
-        console.log("Mensagem enviada:", sendMessage);
 
         // pegar IDs do jwt e destinatário e não estático
         const senderId = 1;
         const recipientId = 2
 
         try {
-            const response = await api.post("/chat/send", { senderId: 1, recipientId: 2, content: sendMessage });
-            if (!response || response.data.error === true) return alert("Mensagem não enviada");
+            const { data } = await api.post("/chat/send", { senderId: senderId, recipientId: recipientId, content: sendMessage });
+            if (!data || data.error === true) return alert("Mensagem não enviada");
             setSendMessage("");
         } catch (e) {
-            alert(e)
+            alert(e);
+        }
+    };
+
+    async function handleSendMessageGroup() {
+        if (!sendMessage.trim()) {
+            alert("Digite uma mensagem antes de enviar");
+            return;
+        };
+    
+        try {
+            const { data } = await api.post(`/room/sendMessage?roomId=${selectedRoom?.id}`,
+                { 
+                    content: sendMessage, 
+                    senderId: 4
+                }
+            );
+            console.log("Mensagem enviada: ", data);
+            if (!data || data.error === true) return alert("Mensagem não enviada");
+            setSendMessage("");
+        } catch (e) {
+            alert(e);
         }
     };
 
     async function handleConversations() {
         try {
-            const response = await api.get("/room");
+            const { data } = await api.get("/room");
 
-            if (!response || response.data.error) return alert("Erro ao buscar conversas");
+            if (!data || data.error) return alert("Erro ao buscar conversas");
 
-            const conversationsData = response.data.map(room => ({
+            const conversationsData = data.map(room => ({
                 id: room.id,
                 name: room.name || "Sala sem nome",
                 members: room.members || []
@@ -73,7 +81,7 @@ export function Home() {
             alert("Erro ao conectar com o servidor");
             setConversations([]); // Garante que o estado seja resetado em caso de erro
         }
-    }
+    };
 
     useEffect(() => {
         const storedConversations = localStorage.getItem('conversations');
@@ -116,10 +124,9 @@ export function Home() {
                     />
                     {selectedRoom && <h2>{selectedRoom.name}</h2>}
                 </header>
-                <div className="chat-area" onClick={handleHistoryMessagesMembers}>
+                <div className="chat-area">
                     {showMembers ? (
-                        // Exibe os membros da sala
-                        <div className="members">
+                        <div className="members" /*Exibe os membros da sala*/> 
                             <h3>Membros</h3>
                             {selectedRoom?.members?.length > 0 ? (
                                 selectedRoom.members.map((member) => (
@@ -145,14 +152,17 @@ export function Home() {
                             {conversations[0]?.members?.length > 0 ? (
                                 <>
                                     <UserMessage
+                                        selectedRoom={selectedRoom}
                                         members={conversations[0].members}
                                         picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
                                     />
                                     <IMessage
+                                        selectedRoom={selectedRoom}
                                         members={conversations[0].members}
                                         picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
                                     />
                                     <UserMessage
+                                        selectedRoom={selectedRoom}
                                         members={conversations[0].members}
                                         picture={conversations[0].members[0]?.picture || "https://via.placeholder.com/50"}
                                     />
@@ -170,11 +180,11 @@ export function Home() {
                         className="input-message"
                         value={sendMessage}
                         onChange={(e) => setSendMessage(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleSendMessage()} // Envia ao pressionar Enter
+                        onKeyDown={(e) => e.key === "Enter" && handleSendMessageGroup}
                     />
                     <button
                         className="send-button"
-                        onClick={handleSendMessage}
+                        onClick={handleSendMessageGroup}
                     >
                         Enviar
                     </button>

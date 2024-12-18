@@ -246,3 +246,64 @@ body {
 .send-button:hover {
     background-color: #636262;
 }
+
+.messages-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.user-message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.user-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.user-message p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.user-message small {
+    font-size: 10px;
+    color: #888;
+}
+
+.i-message {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.i-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.i-message p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.i-message small {
+    font-size: 10px;
+    color: #888;
+}
