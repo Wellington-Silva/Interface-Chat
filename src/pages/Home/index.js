@@ -84,6 +84,7 @@ export function Home() {
     const handleConversations = async () => {
         try {
             const { data } = await api.get("/room");
+            console.log(data);
 
             if (!data || data.error) return alert("Erro ao buscar conversas");
 
