@@ -1,17 +1,103 @@
-# Telas
-- Login
-- Cadastro de usuário
-- Home (Exibir grupos, conversas, membros)
-- Novo grupo
+# Chat App
 
-## Available Scripts
+Um aplicativo de chat moderno e intuitivo, desenvolvido com **Express**, **TypeScript**, **MySQL**, **TypeORM** e **Socket.io**. Este projeto permite criar contas, conversar em tempo real, gerenciar grupos e exibir o status dos membros (online/offline).
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Telas Disponíveis
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 1. Login
+Tela para autenticação de usuários existentes. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. Cadastro de Usuário
+Tela para registro de novos usuários no sistema.
+
+### 3. Home
+Interface principal que exibe:
+- Grupos
+- Conversas
+- Lista de membros
+
+### 4. Novo Grupo
+Permite criar novos grupos para comunicação em tempo real com vários membros.
+
+---
+
+## Estrutura do Projeto
+
+A estrutura de pastas segue o padrão de separação por responsabilidade:
+
+```plaintext
+src
+|-- components
+|   |-- user-message.js
+|
+|-- pages
+|   |-- Home
+|   |   |-- index.js
+|   |   |-- style.css
+|   |-- Login
+|   |   |-- index.js
+|   |   |-- style.css
+|   |-- Register
+|   |   |-- index.js
+|   |   |-- style.css
+|
+|-- services
+|   |-- api.js
+|
+|-- App.js
+|-- index.css
+|-- index.js
+|-- routes.js
+|-- .gitignore
+|-- package-lock.json
+|-- package.json
+|-- README.md
+|-- Senhas do Chat.txt
+```
+
+## Funcionalidades Implementadas
+
+- **Autenticação**
+
+Login de usuários com token JWT (prefixo Bearer no cabeçalho de autorização).
+
+- **Chat em tempo real**
+
+Envio e recebimento de mensagens em tempo real com Socket.io.
+
+- **Grupos**
+
+Criação e gerenciamento de grupos.
+Envio de mensagens para múltiplos membros em grupos.
+
+- **Notificações**
+
+Notificações de novas mensagens para usuários em outras salas ou com o app minimizado.
+
+- **Status dos Usuários**
+
+Indica se os usuários estão online ou offline.
+
+## Como Executar o Projeto
+
+Clone este repositório:
+
+```git clone https://github.com/Wellington-Silva/Interface-Chat.git```
+
+### Inicie o servidor:
+
+npm start
+
+Abra http://localhost:3000 no navegador para acessar a aplicação.
+
+## Tecnologias Utilizadas
+
+- Javascript
+- Socket.io
+- React
+
+## Contribuições
+
+São bem-vindas melhorias, correções e novas funcionalidades. Por favor, envie um pull request ou abra uma issue para discutirmos sua proposta.

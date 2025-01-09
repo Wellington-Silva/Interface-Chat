@@ -72,6 +72,7 @@ export function Home() {
         setLoadingMessages(true);
         try {
             const { data } = await api.get(`/room/historyMembers?roomId=${roomId}`);
+            console.log("Histórico de mensagens: ", data)
             setMessages(data);
         } catch (error) {
             alert("Erro ao carregar mensagens.");
@@ -84,7 +85,7 @@ export function Home() {
     const handleConversations = async () => {
         try {
             const { data } = await api.get("/room");
-            console.log(data);
+            console.log("Conversas: ", data);
 
             if (!data || data.error) return alert("Erro ao buscar conversas");
 
@@ -99,7 +100,7 @@ export function Home() {
             localStorage.setItem("conversations", JSON.stringify(conversationsData));
         } catch (error) {
             alert("Erro ao conectar com o servidor");
-            setConversations([]); // Garante que o estado seja resetado em caso de erro
+            setConversations([]); // Reseta o estado em caso de erro
         }
     };
 
@@ -132,6 +133,7 @@ export function Home() {
         <div className="main">
             <div className="groups">
                 <input placeholder="Pesquisar" type="text" />
+                {console.log(conversations, currentUser)}
                 {conversations.map((conversation) => (
                     <button
                         key={conversation.id}
