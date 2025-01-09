@@ -1,6 +1,6 @@
 # Chat App
 
-Um aplicativo de chat moderno e intuitivo, desenvolvido com **Express**, **TypeScript**, **MySQL**, **TypeORM** e **Socket.io**. Este projeto permite criar contas, conversar em tempo real, gerenciar grupos e exibir o status dos membros (online/offline).
+Um aplicativo de chat moderno e intuitivo, desenvolvido com **React** e **Socket.io**. Este projeto permite criar contas, conversar em tempo real, gerenciar grupos e exibir o status dos membros (online/offline).
 
 ---
 
@@ -80,6 +80,17 @@ Notificações de novas mensagens para usuários em outras salas ou com o app mi
 
 Indica se os usuários estão online ou offline.
 
+## Tecnologias Utilizadas
+
+- Javascript
+- Socket.io
+- React
+
+## Resultados:
+
+### Tela de Home
+<img src="./public/assets/Tela de Home.png" alt="Texto Alternativo">
+
 ## Como Executar o Projeto
 
 Clone este repositório:
@@ -91,12 +102,6 @@ Clone este repositório:
 npm start
 
 Abra http://localhost:3000 no navegador para acessar a aplicação.
-
-## Tecnologias Utilizadas
-
-- Javascript
-- Socket.io
-- React
 
 ## Contribuições
 
