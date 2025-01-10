@@ -97,7 +97,6 @@ export function Register() {
                 </form>
                 <div className="button-Login">
                     <Link to="/">Login</Link>
-                    <Link to="/home">Home</Link>
                 </div>
             </section>
         </div>

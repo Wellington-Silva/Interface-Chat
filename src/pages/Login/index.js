@@ -81,7 +81,6 @@ export function Login() {
                     </form>
                     <div className="container-button">
                         <Link to="/register">Registrar-se</Link>
-                        <Link to="/home">Home</Link>
                     </div>
                 </section>
             </div>

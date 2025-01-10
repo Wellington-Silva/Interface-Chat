@@ -88,8 +88,17 @@ Indica se os usuários estão online ou offline.
 
 ## Resultados:
 
+### Tela de Login
+<img src="./public/assets/Tela de Login.png" alt="Texto Alternativo">
+
+### Tela de Cadastro
+<img src="./public/assets/Tela de Cadastro.png" alt="Texto Alternativo">
+
 ### Tela de Home
 <img src="./public/assets/Tela de Home.png" alt="Texto Alternativo">
+
+### Tela de Membros
+<img src="./public/assets/Tela de Membros.png" alt="Texto Alternativo">
 
 ## Como Executar o Projeto
 

@@ -84,6 +84,7 @@ export function Home() {
     // Função para buscar conversas disponíveis
     const handleConversations = async () => {
         try {
+            console.log("chama aqui")
             const { data } = await api.get("/room");
             console.log("Conversas: ", data);
 
@@ -111,7 +112,7 @@ export function Home() {
             setConversations(parsedConversations);
             setSelectedRoom(parsedConversations[0] || null);
         } else {
-            handleConversations(); // Carrega do backend se não houver localStorage
+            handleConversations();
         }
     }, []);
 
@@ -133,7 +134,8 @@ export function Home() {
         <div className="main">
             <div className="groups">
                 <input placeholder="Pesquisar" type="text" />
-                {console.log(conversations, currentUser)}
+                {console.log(conversations)}
+                {conversations.length === 0 && <p>Nenhuma conversa disponível.</p>}
                 {conversations.map((conversation) => (
                     <button
                         key={conversation.id}
